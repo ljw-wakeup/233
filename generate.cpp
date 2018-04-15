@@ -22,7 +22,7 @@ node* generate::creExpression(node* Nptr, int & onum) {
 	int min = 0;
 	int max = 0;
 	if (!Nptr)  return NULL;
-	//×ó½áµã
+	//å·¦ç»“ç‚¹
 	Nptr->leftptr = new node;
 	if ((*Nptr).operator_is_pow()) {
 		setting.setOperate_pow(false);
@@ -30,36 +30,36 @@ node* generate::creExpression(node* Nptr, int & onum) {
 		max = setting.getRange_max();
 		setting.setRange(setting.getRange_min(), setting.getRange_min()+10);
 	}
-	//²Ù×÷·ûÊıÄ¿»¹Î´µ½´ïÉÏÏŞ
+	//æ“ä½œç¬¦æ•°ç›®è¿˜æœªåˆ°è¾¾ä¸Šé™
 	if (onum <= setting.getOperator_account()) {
-		Nptr->leftptr->geneNode(setting);                        //Éú³É×ó½áµãÀàĞÍ
-																 //Èç¹û½áµãÀàĞÍÎª²Ù×÷·û
+		Nptr->leftptr->geneNode(setting);                        //ç”Ÿæˆå·¦ç»“ç‚¹ç±»å‹
+																 //å¦‚æœç»“ç‚¹ç±»å‹ä¸ºæ“ä½œç¬¦
 		if (Nptr->leftptr->getType() == 1) {
-			onum++;                                               //²Ù×÷·ûÊıÄ¿¼ÓÒ»
-			creExpression(Nptr->leftptr, onum);                      //µİ¹éÉú³É×ó×ÓÊ÷
+			onum++;                                               //æ“ä½œç¬¦æ•°ç›®åŠ ä¸€
+			creExpression(Nptr->leftptr, onum);                      //é€’å½’ç”Ÿæˆå·¦å­æ ‘
 		}
 	}
-	//²Ù×÷·ûÒÑ´ïÉÏÏŞ
+	//æ“ä½œç¬¦å·²è¾¾ä¸Šé™
 	else {
 		Nptr->leftptr->setNode(NUMBER, setting);
 	}
 
-	//ÓÒ½áµã
+	//å³ç»“ç‚¹
 	Nptr->rightptr = new node();
-	//Èç¹û²Ù×÷·ûÊÇ³Ë·½
+	//å¦‚æœæ“ä½œç¬¦æ˜¯ä¹˜æ–¹
 	if ((*Nptr).operator_is_pow()) {
 		Nptr->rightptr->setNodePow();
 	}
-	//²Ù×÷·ûÊıÄ¿Î´´ïÉÏÏŞ
+	//æ“ä½œç¬¦æ•°ç›®æœªè¾¾ä¸Šé™
 	else if (onum <= setting.getOperator_account()) {
-		Nptr->rightptr->geneNode(setting);                        //Éú³ÉÓÒ½áµãÀàĞÍ
-																  //Èç¹û½áµãÀàĞÍÎª²Ù×÷·û
+		Nptr->rightptr->geneNode(setting);                        //ç”Ÿæˆå³ç»“ç‚¹ç±»å‹
+																  //å¦‚æœç»“ç‚¹ç±»å‹ä¸ºæ“ä½œç¬¦
 		if (Nptr->rightptr->getType() == 1) {
-			onum++;                                               //²Ù×÷·ûÊıÄ¿¼ÓÒ»
-			creExpression(Nptr->rightptr, onum);                      //µİ¹éÉú³ÉÓÒ×ÓÊ÷
+			onum++;                                               //æ“ä½œç¬¦æ•°ç›®åŠ ä¸€
+			creExpression(Nptr->rightptr, onum);                      //é€’å½’ç”Ÿæˆå³å­æ ‘
 		}
 	}
-	//²Ù×÷·ûÊıÄ¿´ïµ½ÉÏÏŞ
+	//æ“ä½œç¬¦æ•°ç›®è¾¾åˆ°ä¸Šé™
 	else {
 		Nptr->rightptr->setNode(NUMBER, setting);
 	}
@@ -70,6 +70,8 @@ node* generate::creExpression(node* Nptr, int & onum) {
 	return Nptr;
 
 }
+
+
 
 
 void generate::addTree(node* rootptr) {
@@ -90,7 +92,7 @@ Expression generate::getExpression(node* rootptr) {
 		Express.consequence = num3;
 		Express.expression = {};
 		return Express;
-	}//ËäÈ»¿ÉÄÜÕâÖÖÇé¿ö²»´æÔÚµÄ
+	}//è™½ç„¶å¯èƒ½è¿™ç§æƒ…å†µä¸å­˜åœ¨çš„
 	if (!rootptr->getType()) {
 		Expression Express;
 		Express.consequence = *rootptr;
@@ -108,16 +110,16 @@ Expression generate::getExpression(node* rootptr) {
 	if (right.consequence.getup() > MAX_NUM || right.consequence.getdown() > MAX_NUM) {
 		right.consequence.setNode(NUMBER, UP, 0, OPERATE);
 	}
-	//×ÓÊ÷½á¹û³öÏÖ·Ç·¨
+	//å­æ ‘ç»“æœå‡ºç°éæ³•
 	if (!left.consequence.judge_node()) {
 		return left;
 	}
 	if (!right.consequence.judge_node()) {
 		return right;
 	}
-	if ((*rootptr).operator_is_div() && right.consequence.getup()) {//³ı·¨
-		if (!setting.getIs_decimal() && !setting.getIs_proper_fraction()) {//½öÖ§³ÖÕûÊı
-			if (left.consequence.getup() / right.consequence.getup() != (long long)(left.consequence.getup() / right.consequence.getup())) {//²»Õû³ı
+	if ((*rootptr).operator_is_div() && right.consequence.getup()) {//é™¤æ³•
+		if (!setting.getIs_decimal() && !setting.getIs_proper_fraction()) {//ä»…æ”¯æŒæ•´æ•°
+			if (left.consequence.getup() / right.consequence.getup() != (long long)(left.consequence.getup() / right.consequence.getup())) {//ä¸æ•´é™¤
 				long long makeup = ((long long)left.consequence.getup()) % ((long long)right.consequence.getup());
 				makeup = (long long)right.consequence.getup() - makeup;
 				node* new_operate = new node;
@@ -221,7 +223,7 @@ bool generate::checkrepeat(node* rootptr, Expression &exp) {
 }
 
 bool generate::checkRepeatT(node* ptr, node* rootptr) {
-	//Èç¹û¶¼ÊÇÔËËã·û
+	//å¦‚æœéƒ½æ˜¯è¿ç®—ç¬¦
 	if (ptr == NULL && rootptr == NULL) return true;
 	if (ptr == NULL || rootptr == NULL) return false;
 	if (*ptr == *rootptr) {
@@ -235,7 +237,7 @@ bool generate::set(int ExpNumber, int operator_number, int Accuracy, bool fracti
 
 	fstream setfile;
 	setfile.open("setting", ios::out);
-	//±í´ïÊ½¸öÊı
+	//è¡¨è¾¾å¼ä¸ªæ•°
 	setfile << "ExpNumber:" << endl;
 	if (ExpNumber > MAX || ExpNumber < 0) {
 		ExpNumber = EXPNUMBER;
@@ -244,7 +246,7 @@ bool generate::set(int ExpNumber, int operator_number, int Accuracy, bool fracti
 	else  setfile << "true" << endl;
 	setfile << ExpNumber << endl;
 
-	//²Ù×÷·û¸öÊı
+	//æ“ä½œç¬¦ä¸ªæ•°
 	setfile << "operator_number:" << endl;
 	if (operator_number > OPERATOR_NUMBER || operator_number < 0) {
 		operator_number = OPERATOR_NUMBER;
@@ -253,7 +255,7 @@ bool generate::set(int ExpNumber, int operator_number, int Accuracy, bool fracti
 	else setfile << "true" << endl;
 	setfile << operator_number << endl;
 
-	//Ğ¡ÊıÎ»Êı
+	//å°æ•°ä½æ•°
 	setfile << "Accuracy:" << endl;
 	if (Accuracy < 0 || Accuracy >3) {
 		setfile << "false" << endl;
@@ -266,7 +268,7 @@ bool generate::set(int ExpNumber, int operator_number, int Accuracy, bool fracti
 		Accuracy = (int)pow(10, Accuracy);
 
 	}
-	//·ÖÊıºÍĞ¡ÊıµÄÉèÖÃ
+	//åˆ†æ•°å’Œå°æ•°çš„è®¾ç½®
 	if (fraction && decimal) {
 		setfile << "fration:" << endl;
 		setfile << "false" << endl;
@@ -278,20 +280,20 @@ bool generate::set(int ExpNumber, int operator_number, int Accuracy, bool fracti
 		setfile << "no" << endl;
 	}
 
-	//·ÖÊı
+	//åˆ†æ•°
 	else {
 		setfile << "fraction:" << endl;
 		setfile << "true" << endl;
 		if (fraction) setfile << "yes" << endl;
 		else setfile << "no" << endl;
 
-		//Ğ¡Êı
+		//å°æ•°
 		setfile << "decimal:" << endl;
 		setfile << "true" << endl;
 		if (decimal) setfile << "yes" << endl;
 		else setfile << "no" << endl;
 	}
-	//×îĞ¡·¶Î§Êı
+	//æœ€å°èŒƒå›´æ•°
 	setfile << "minnum:" << endl;
 	if (min > max || min>MAX || min<0) {
 		min = MIN;
@@ -300,7 +302,7 @@ bool generate::set(int ExpNumber, int operator_number, int Accuracy, bool fracti
 	else setfile << "true" << endl;
 	setfile << min << endl;
 
-	//·¶Î§×î´óÊı
+	//èŒƒå›´æœ€å¤§æ•°
 	setfile << "maxnum:" << endl;
 	if (max > MAX || max <= 0) {
 		max = MAX;
@@ -310,7 +312,7 @@ bool generate::set(int ExpNumber, int operator_number, int Accuracy, bool fracti
 	setfile << max << endl;
 
 	setfile << "operator_mode:" << endl;
-	//ÔËËã·û¸ñÊ½
+	//è¿ç®—ç¬¦æ ¼å¼
 	if (operator_mode < 0 || operator_mode >4) {
 		operator_mode = OPERATOR_MODE;
 		setfile << "flase" << endl;
@@ -379,7 +381,7 @@ Setting generate::get_Setting()
 }
 
 
-node generate::getValue(node leftValue, node rightValue, int Operate) {//µ÷ÓÃ
+node generate::getValue(node leftValue, node rightValue, int Operate) {//è°ƒç”¨
 	switch (Operate) {
 	case 1:
 		return leftValue + rightValue;
