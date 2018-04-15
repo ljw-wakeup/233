@@ -1,0 +1,26 @@
+﻿// Dll1.cpp: 定义 DLL 应用程序的导出函数。
+//
+
+#include "stdafx.h" 
+#include "DLL.h"  
+#include"generate.h"
+#include <Windows.h>  
+#include <iostream>  
+using namespace std;
+
+Answer set(int ExpNumber, int operator_number, int Accuracy, bool fraction, bool decimal, int min, int max, int operator_mode) {
+	generate a;
+	a.set(ExpNumber, operator_number, Accuracy, fraction, decimal, min, max, operator_mode);
+	a.expression();
+	Answer B;
+	B.consequnce = new string[ExpNumber];
+	B.express = new string[ExpNumber];
+	int i = 0;
+	Setting setting = a.get_Setting();
+	for (Expression A : a.ExpressionList) {
+		B.consequnce[i] = A.consequence.num2str(setting);
+		B.express[i] = A.expression;
+		i++;
+	}
+	return B;
+}
